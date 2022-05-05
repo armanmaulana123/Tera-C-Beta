@@ -227,6 +227,18 @@ class Landing extends CI_Controller
         }
     }
 
+    public function detail_produk($kode_produk)
+    {
+        $data['title'] = 'Detail Produk | Tera-C';
+        $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        $data['data_produk'] = $this->M_auth->getDataProduk($kode_produk);
+
+        $this->load->view('landing/meta', $data);
+        $this->load->view('landing/header', $data);
+        $this->load->view('user/detail_produk', $data);
+        $this->load->view('landing/footer');
+    }
+
     public function logout()
     {
         session_destroy();

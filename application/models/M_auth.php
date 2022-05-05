@@ -46,4 +46,14 @@ class M_auth extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    function getDataProduk($kode_produk)
+    {
+        $this->db->select('*');
+        $this->db->from('ketersediaanterasi');
+        $this->db->join('user', 'user.id_user = ketersediaanterasi.id_penjual');
+        $this->db->where('kode_produk', $kode_produk);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
 }
