@@ -94,6 +94,9 @@
                                         <button type="submit" class="btn btn-primary btn-lg btn-block">
                                             Register
                                         </button>
+                                        <a href="<?= base_url('landing/login') ?>" class="btn btn-outline-primary btn-lg btn-block">
+                                            Batal
+                                        </a>
                                     </div>
                                 </form>
                             </div>

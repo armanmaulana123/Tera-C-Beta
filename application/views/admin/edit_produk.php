@@ -48,6 +48,9 @@
                         <button type="submit" class="btn btn-primary btn-lg btn-block">
                             Submit
                         </button>
+                        <a href="<?= base_url('admin/daftar_produk') ?>" class="btn btn-outline-primary btn-lg btn-block">
+                            Batal
+                        </a>
                     </div>
                 </form>
             </div>

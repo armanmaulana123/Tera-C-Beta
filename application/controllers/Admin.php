@@ -227,7 +227,7 @@ class Admin extends CI_Controller
         $acak = random_string('alnum', 3);
 
         if ($hasil->num_rows() > 0) {
-            $nmr = explode('_', $hasil->row()->kode_poduk);
+            $nmr = explode('_', $hasil->row()->kode_produk);
             $slice = substr($nmr[1], 3);
             $merge = sprintf("%1d", (int)$slice + 1);
             $data = $acak . $merge;

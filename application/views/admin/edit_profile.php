@@ -55,7 +55,8 @@
 
                         </div>
                         <div class="card-footer text-right">
-                            <button class="btn btn-primary">Save Changes</button>
+                            <a href="<?= base_url('admin/profile') ?>" class="btn btn-outline-primary">Batal</a>
+                            <button class="btn btn-primary">Simpan</button>
                         </div>
                     </form>
                 </div>
