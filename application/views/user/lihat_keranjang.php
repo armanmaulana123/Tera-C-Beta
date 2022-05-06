@@ -98,10 +98,12 @@
                                 <h5 class="text-primary"><?= "Rp " . number_format($this->cart->total(), 0, ',', '.'); ?></h5>
                             </div>
                         </div>
-                        <div>
-                            <a href="<?= base_url('landing/hapus_keranjang') ?>" class="btn btn-outline-danger">Kosongkan Keranjang</a>
-                            <a href="<?= base_url('landing/checkout') ?>" class="btn btn-primary">Checkout</a>
-                        </div>
+                        <?php if (count($keranjang) > 0) { ?>
+                            <div>
+                                <a href="<?= base_url('landing/hapus_keranjang') ?>" class="btn btn-outline-danger">Kosongkan Keranjang</a>
+                                <a href="<?= base_url('landing/checkout') ?>" class="btn btn-primary">Checkout</a>
+                            </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>

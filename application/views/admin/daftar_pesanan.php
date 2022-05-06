@@ -2,7 +2,7 @@
 <div class="main-content">
     <section class="section">
         <div class="section-header">
-            <h1>Daftar Produk</h1>
+            <h1>Daftar Pesanan</h1>
         </div>
         <div class="card">
             <div class="card-header">
@@ -52,7 +52,7 @@
                 </div>
                 <div class="text-center">
                     <div>
-                        <a href="<?= base_url('landing') ?>" class="btn btn-primary">Kembali</a>
+                        <a href="<?= base_url('admin') ?>" class="btn btn-primary">Kembali</a>
                     </div>
                 </div>
             </div>

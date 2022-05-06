@@ -59,6 +59,11 @@
                             <?php endif ?>
                         </tbody>
                     </table>
+                    <div class="text-center mb-3">
+                        <div>
+                            <a href="<?= base_url('admin') ?>" class="btn btn-primary">Kembali</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
