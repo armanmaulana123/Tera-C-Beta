@@ -98,6 +98,9 @@
                                 </form>
                             </div>
                         </div>
+                        <div class="mt-5 text-muted text-center">
+                            Sudah Memiliki Akun? <a href="<?= base_url('landing/login') ?>">Masuk</a>
+                        </div>
                         <div class="simple-footer">
                             Copyright &copy; Tera-C 2022
                         </div>
