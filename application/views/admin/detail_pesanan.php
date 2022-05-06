@@ -161,7 +161,7 @@
                         <!-- <div class="float-lg-left mb-lg-0 mb-3">
                             <button class="btn btn-warning btn-icon icon-left"><i class="fas fa-print"></i> Print</button>
                         </div> -->
-                        <a href="<?= base_url('landing/lihat_pesanan') ?>" class="btn btn-danger btn-icon icon-left">Kembali</a>
+                        <a href="<?= base_url('admin/daftar_pesanan') ?>" class="btn btn-danger btn-icon icon-left">Kembali</a>
                     </div>
                 </div>
             </form>
