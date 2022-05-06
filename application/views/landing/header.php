@@ -29,7 +29,7 @@
         <div class="main-wrapper container">
             <div class="navbar-bg"></div>
             <nav class="navbar navbar-expand-lg main-navbar">
-                <a href="index.html" class="navbar-brand sidebar-gone-hide">Tera-C</a>
+                <a href="<?= base_url('landing') ?>" class="navbar-brand sidebar-gone-hide">Tera-C</a>
                 <div class="navbar-nav">
                     <a href="#" class="nav-link sidebar-gone-show" data-toggle="sidebar"><i class="fas fa-bars"></i></a>
                 </div>
@@ -177,65 +177,11 @@
                             </div>
                         </div>
                     </li> -->
-                    <!-- <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="far fa-bell"></i></a>
-                        <div class="dropdown-menu dropdown-list dropdown-menu-right">
-                            <div class="dropdown-header">Notifications
-                                <div class="float-right">
-                                    <a href="#">Mark All As Read</a>
-                                </div>
-                            </div>
-                            <div class="dropdown-list-content dropdown-list-icons">
-                                <a href="#" class="dropdown-item dropdown-item-unread">
-                                    <div class="dropdown-item-icon bg-primary text-white">
-                                        <i class="fas fa-code"></i>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        Template update is available now!
-                                        <div class="time text-primary">2 Min Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item">
-                                    <div class="dropdown-item-icon bg-info text-white">
-                                        <i class="far fa-user"></i>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        <b>You</b> and <b>Dedik Sugiharto</b> are now friends
-                                        <div class="time">10 Hours Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item">
-                                    <div class="dropdown-item-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        <b>Kusnaedi</b> has moved task <b>Fix bug header</b> to <b>Done</b>
-                                        <div class="time">12 Hours Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item">
-                                    <div class="dropdown-item-icon bg-danger text-white">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        Low disk space. Let's clean it!
-                                        <div class="time">17 Hours Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item">
-                                    <div class="dropdown-item-icon bg-info text-white">
-                                        <i class="fas fa-bell"></i>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        Welcome to Stisla template!
-                                        <div class="time">Yesterday</div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="dropdown-footer text-center">
-                                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
-                            </div>
-                        </div>
-                    </li> -->
+                    <?php if (count($keranjang) > 0) { ?>
+                        <li class="nav-link"><a href="<?= base_url('landing/lihat_keranjang') ?>" class="nav-link nav-link-lg beep"><i class="fas fa-shopping-cart"></i></a></li>
+                    <?php } else { ?>
+                        <li class="nav-link"><a href="<?= base_url('landing/lihat_keranjang') ?>" class="nav-link nav-link-lg"><i class="fas fa-shopping-cart"></i></a></li>
+                    <?php } ?>
                     <?php if ($data_user == null) { ?>
                         <li>
                             <a href="<?= base_url('landing/login') ?>" class="nav-link">Masuk</a>
@@ -271,14 +217,10 @@
             <nav class="navbar navbar-secondary navbar-expand-lg">
                 <div class="container">
                     <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a href="#" data-toggle="dropdown" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
-                            <ul class="dropdown-menu">
-                                <li class="nav-item"><a href="index-0.html" class="nav-link">General Dashboard</a></li>
-                                <li class="nav-item"><a href="index.html" class="nav-link">Ecommerce Dashboard</a></li>
-                            </ul>
+                        <li class="nav-item">
+                            <a href="<?= base_url('landing') ?>" class="nav-link"><i class="fas fa-home"></i><span>Beranda</span></a>
                         </li>
-                        <li class="nav-item active">
+                        <!-- <li class="nav-item">
                             <a href="#" class="nav-link"><i class="far fa-heart"></i><span>Top Navigation</span></a>
                         </li>
                         <li class="nav-item dropdown">
@@ -299,7 +241,7 @@
                                     </ul>
                                 </li>
                             </ul>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </nav>

@@ -38,50 +38,58 @@
 <div class="main-content">
     <section class="section">
         <div class="section-header">
-            <h1>Detail Produk / <?= $data_produk['kode_produk'] ?></h1>
+            <h1>Lihat Keranjang</h1>
         </div>
 
-        <?php $rupiah = "Rp " . number_format($data_produk['harga_terasi'], 0, ',', '.'); ?>
         <div class="section-body">
             <div class="card">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="<?= base_url('assets/images/foto_produk/') . $data_produk['foto_terasi'] ?>" class="img-fluid rounded-start" alt="...">
-                    </div>
-                    <div class="col-md-8">
-                        <form action="<?= base_url('landing/tambah_keranjang') ?>" method="POST">
-                            <div class="card-body">
-                                <h5 class="card-title"><?= $data_produk['nama_terasi'] ?></h5>
-                                <h4 class="card-text text-primary mb-3"><?= $rupiah ?></h4>
-                                <div class="row mb-4">
-                                    <div class="col-md-3">
-                                        <p class="card-text mb-3">Ukuran Terasi</p>
-                                        <p class="card-text mb-3">Tanggal Produksi</p>
-                                        <p class="card-text mb-3">Terakhir Restock</p>
-                                        <p class="card-text mb-3">Kuantitas</p>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <p class="card-text text-dark mb-3"><?= $data_produk['ukuran_terasi'] ?> Cm.</p>
-                                        <p class="card-text text-dark mb-3"><?= $data_produk['tgl_produksi'] ?></p>
-                                        <p class="card-text text-dark mb-3"><?= $data_produk['tgl_restock'] ?></p>
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <input type="number" name="qty" class="form-control" min="1">
-                                                <input type="hidden" name="kode_produk" value="<?= $data_produk['kode_produk'] ?>">
-                                                <input type="hidden" name="nama" value="<?= $data_produk['nama_terasi'] ?>">
-                                                <input type="hidden" name="harga" value="<?= $data_produk['harga_terasi'] ?>">
-                                                <input type="hidden" name="gambar" value="<?= $data_produk['foto_terasi'] ?>">
+                <div class="card-header">
+                    <h4>Keranjang</h4>
+                </div>
+                <div class="card-body">
 
-                                            </div>
-                                            <div class="col-md-9">
-                                                <p class="card-text text-dark mb-3">tersisa <?= $data_produk['jumlah_ketersediaan'] ?> Pcs.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Masukkan Keranjang</button>
-                            </div>
-                        </form>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Gambar Produk</th>
+                                <th>Nama Produk</th>
+                                <th>Jumlah</th>
+                                <th>Harga Satuan</th>
+                                <th>Action</th>
+                            </tr>
+                            <?php if (count($keranjang) > 0) { ?>
+                                <?php foreach ($keranjang as $k) { ?>
+                                    <tr>
+                                        <td>
+                                            <img alt="image" src="<?= base_url('assets/images/foto_produk/') . $k['gambar'] ?>" class="rounded-circle" width="50" title="<?= $k['name'] ?>">
+                                        </td>
+                                        <td>
+                                            <?= $k['name'] ?>
+                                        </td>
+                                        <td>
+                                            <?= $k['qty'] ?> Pcs
+                                        </td>
+                                        <td><?= $k['price'] ?></td>
+                                        <td>
+                                            <span><a href="<?= base_url('landing/hapus_item/') . $k['rowid'] ?>" class="btn btn-danger"><i class="fas fa-trash"></i></a></span>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td colspan="5" align="center">Tidak Ada Item</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" align="center">
+                                        <a href="<?= base_url('landing') ?>" class="btn btn-primary"><i class="fas fa-shopping-cart"></i>&nbsp; Belanja Sekarang</a>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </div>
+                    <div class="float-right">
+                        <a href="<?= base_url('landing/hapus_keranjang') ?>" class="btn btn-outline-danger">Kosongkan Keranjang</a>
+                        <a href="#" class="btn btn-primary">Checkout</a>
                     </div>
                 </div>
             </div>

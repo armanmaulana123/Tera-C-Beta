@@ -15,6 +15,7 @@ class Landing extends CI_Controller
         $data['title'] = 'Tera-C';
         $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
         $data['data_produk'] = $this->M_auth->data_produk();
+        $data['keranjang'] = $this->cart->contents();
 
         $this->load->view('landing/meta', $data);
         $this->load->view('landing/header', $data);
@@ -147,6 +148,7 @@ class Landing extends CI_Controller
     {
         $data['title'] = 'Profil | Tera-C';
         $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        $data['keranjang'] = $this->cart->contents();
 
         $this->load->view('landing/meta', $data);
         $this->load->view('landing/header', $data);
@@ -158,6 +160,7 @@ class Landing extends CI_Controller
     {
         $data['title'] = 'Edit Profil | Tera-C';
         $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        $data['keranjang'] = $this->cart->contents();
 
         $this->load->view('landing/meta', $data);
         $this->load->view('landing/header', $data);
@@ -232,11 +235,72 @@ class Landing extends CI_Controller
         $data['title'] = 'Detail Produk | Tera-C';
         $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
         $data['data_produk'] = $this->M_auth->getDataProduk($kode_produk);
+        $data['keranjang'] = $this->cart->contents();
 
         $this->load->view('landing/meta', $data);
         $this->load->view('landing/header', $data);
         $this->load->view('user/detail_produk', $data);
         $this->load->view('landing/footer');
+    }
+
+    public function tambah_keranjang()
+    {
+        $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        if (!empty($data['data_user'])) {
+            $kode_produk = htmlspecialchars($this->input->post('kode_produk'));
+            $nama = htmlspecialchars($this->input->post('nama'));
+            $qty = htmlspecialchars($this->input->post('qty'));
+            $harga = htmlspecialchars($this->input->post('harga'));
+            $gambar = htmlspecialchars($this->input->post('gambar'));
+
+            $data = array(
+                'id' => $kode_produk,
+                'name' => $nama,
+                'qty' => $qty,
+                'price' => $harga,
+                'gambar' => $gambar
+            );
+            $result = $this->cart->insert($data);
+            if ($result == true) {
+                $this->session->set_flashdata('pesan', array(
+                    'status_pesan' => true,
+                    'isi_pesan' => 'Berhasil Memasukkan Ke Keranjang'
+                ));
+                redirect('landing/detail_produk/' . $kode_produk);
+            } else {
+                $this->session->set_flashdata('pesan', array(
+                    'status_pesan' => false,
+                    'isi_pesan' => 'Gagal Memasukkan Ke Keranjang'
+                ));
+                redirect('landing/detail_produk/' . $kode_produk);
+            }
+        } else {
+            redirect('landing/login');
+        }
+    }
+
+    public function lihat_keranjang()
+    {
+        $data['title'] = 'Lihat Keranjang | Tera-C';
+        $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        $data['keranjang'] = $this->cart->contents();
+
+        $this->load->view('landing/meta', $data);
+        $this->load->view('landing/header', $data);
+        $this->load->view('user/lihat_keranjang', $data);
+        $this->load->view('landing/footer');
+    }
+
+    public function hapus_keranjang()
+    {
+        $this->cart->destroy();
+        redirect('landing/lihat_keranjang');
+    }
+
+    public function hapus_item($rowid)
+    {
+        $this->cart->update(array('rowid' => $rowid, 'qty' => 0));
+        redirect('landing/lihat_keranjang');
     }
 
     public function logout()

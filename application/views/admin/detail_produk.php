@@ -36,7 +36,6 @@
                     </div>
                 </div>
                 <div class="article-cta">
-                    <a href="#" class="btn btn-primary">Tambah Stok</a>
                     <a href="<?= base_url('admin/daftar_produk') ?>" class="btn btn-outline-primary text-primary">Kembali</a>
                 </div>
             </div>
