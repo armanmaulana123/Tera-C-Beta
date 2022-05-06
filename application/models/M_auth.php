@@ -56,4 +56,72 @@ class M_auth extends CI_Model
         $query = $this->db->get();
         return $query->row_array();
     }
+
+    function tambah_keranjang($data)
+    {
+        return $this->db->insert('informasipemesananterasi', $data);
+    }
+
+    function tambah_pesanan($data)
+    {
+        return $this->db->insert('detaildatapemesanan', $data);
+    }
+
+    function data_pesanan($id_user)
+    {
+        $this->db->select('*');
+        $this->db->from('detaildatapemesanan d');
+        $this->db->join('informasistatuspemesananterasi i', 'd.id_informasiStatus = i.id_informasiStatus');
+        $this->db->join('user u', 'u.id_user = d.id_pembeli');
+        $this->db->where('id_user', $id_user);
+        // $this->db->where("i.nama_status != 'selesai' ");
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function getPesanan($kode_transaksi)
+    {
+        $this->db->select('*');
+        $this->db->from('detaildatapemesanan d');
+        $this->db->join('informasistatuspemesananterasi i', 'd.id_informasiStatus = i.id_informasiStatus');
+        $this->db->join('user u', 'u.id_user = d.id_pembeli');
+        $this->db->where('kode_transaksi', $kode_transaksi);
+        // $this->db->where("i.nama_status != 'selesai' ");
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
+    function getItem($kode_transaksi)
+    {
+        $this->db->select('*');
+        $this->db->from('informasipemesananterasi i');
+        $this->db->join('ketersediaanterasi k', 'i.kode_produk = k.kode_produk');
+        $this->db->where('kode_transaksi', $kode_transaksi);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function tambah_bayar($data)
+    {
+        return $this->db->insert('pembayaranpembeliterasi', $data);
+    }
+
+    function edit_pemesanan($where, $data)
+    {
+        return $this->db->update('detaildatapemesanan', $data, $where);
+    }
+
+    function edit_pembayaran($where, $data)
+    {
+        return $this->db->update('pembayaranpembeliterasi', $data, $where);
+    }
+
+    function getPembayaran($kode_transaksi)
+    {
+        $this->db->select('*');
+        $this->db->from('pembayaranpembeliterasi');
+        $this->db->where('kode_transaksi', $kode_transaksi);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
 }

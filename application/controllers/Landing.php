@@ -303,6 +303,244 @@ class Landing extends CI_Controller
         redirect('landing/lihat_keranjang');
     }
 
+    public function checkout()
+    {
+        $data['title'] = 'Checkout | Tera-C';
+        $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        $data['keranjang'] = $this->cart->contents();
+
+        $this->load->view('landing/meta', $data);
+        $this->load->view('landing/header', $data);
+        $this->load->view('user/checkout', $data);
+        $this->load->view('landing/footer');
+    }
+
+    public function proses_checkout()
+    {
+        $keranjang = $this->cart->contents();
+
+        $pesan = array();
+
+        $pesanan = array();
+        foreach ($keranjang as $k) {
+            $data = array(
+                'kode_produk' => $k['id'],
+                'kode_transaksi' => htmlspecialchars($this->input->post('kode_transaksi', true)),
+                'jumlah_terasi' => $k['qty'],
+                'total_harga' => $k['subtotal'],
+            );
+            $pesanan[] = $data;
+        }
+
+
+        $data = array(
+            'id_pembeli' => htmlspecialchars($this->input->post('id_user', true)),
+            'kode_transaksi' => htmlspecialchars($this->input->post('kode_transaksi', true)),
+            'total_hargaPemesanan' => $this->cart->total(),
+            'tgl_pemesanan' => date('Y-m-d'),
+            'bulan_pemesanan' => date('F'),
+            'id_informasiStatus' => 1
+        );
+
+        foreach ($pesanan as $p) {
+            $this->M_auth->tambah_keranjang($p);
+        }
+
+        $result = $this->M_auth->tambah_pesanan($data);
+        if ($result == true) {
+            $this->cart->destroy();
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => true,
+                'isi_pesan' => 'Checkout Berhasil Dilakukan'
+            ));
+            redirect('landing/lihat_keranjang');
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Checkout Gagal Dilakukan'
+            ));
+            redirect('landing/checkout');
+        }
+    }
+
+    public function lihat_pesanan()
+    {
+        $data['title'] = 'Pesanan | Tera-C';
+        $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        $data['keranjang'] = $this->cart->contents();
+        $data['pesanan'] = $this->M_auth->data_pesanan($this->session->userdata('id_user'));
+
+        $this->load->view('landing/meta', $data);
+        $this->load->view('landing/header', $data);
+        $this->load->view('user/lihat_pesanan', $data);
+        $this->load->view('landing/footer');
+    }
+
+    public function bayar($kode_transaksi)
+    {
+        $data['title'] = 'Bayar | Tera-C';
+        $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        $data['keranjang'] = $this->cart->contents();
+        $data['data_pesanan'] = $this->M_auth->getPesanan($kode_transaksi);
+        $data['produk'] = $this->M_auth->getItem($kode_transaksi);
+
+        $this->load->view('landing/meta', $data);
+        $this->load->view('landing/header', $data);
+        $this->load->view('user/bayar', $data);
+        $this->load->view('landing/footer');
+    }
+
+    public function proses_bayar()
+    {
+        $pesan = array();
+
+        $config['upload_path']          = 'assets/images/bukti_pembayaran/';  // folder upload 
+        $config['allowed_types']        = 'pdf|jpg|png|jpeg'; // jenis file
+        $config['max_size']             = 8000;
+
+        $this->load->library('upload', $config);
+        $this->upload->initialize($config);
+        if (!$this->upload->do_upload('bukti_pembayaran')) //sesuai dengan name pada form 
+        {
+            array_push($pesan, $this->upload->display_errors());
+        }
+        $file = $this->upload->data();
+        $bukti = $file['file_name'];
+
+        $data = [
+            'id_detailDataPemesanan' => htmlspecialchars($this->input->post('id_pemesanan', true)),
+            'kode_transaksi' => htmlspecialchars($this->input->post('kode_transaksi', true)),
+            'tgl_pembayaran' => date('Y-m-d'),
+            'metode_pembayaran' => 'Transfer',
+            'bukti_pembayaran' => $bukti
+        ];
+
+        $this->M_auth->tambah_bayar($data);
+
+        $update = [
+            'id_informasiStatus' => 2
+        ];
+
+        $where = array(
+            'kode_transaksi' => htmlspecialchars($this->input->post('kode_transaksi', true))
+        );
+
+        if (empty($pesan)) {
+            $result = $this->M_auth->edit_pemesanan($where, $update);
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Isi Form Dengan Valid'
+            ));
+            redirect('landing/bayar/' . $this->input->post('kode_transaksi'));
+        }
+        if ($result == true) {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => true,
+                'isi_pesan' => 'Pembayaran Berhasil'
+            ));
+            redirect('landing/lihat_pesanan');
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Pembayaran Gagal'
+            ));
+            redirect('landing/bayar/' . $this->input->post('kode_transaksi'));
+        }
+    }
+
+    public function detail_pesanan($kode_transaksi)
+    {
+        $data['title'] = 'Detail Pesanan | Tera-C';
+        $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        $data['keranjang'] = $this->cart->contents();
+        $data['data_pesanan'] = $this->M_auth->getPesanan($kode_transaksi);
+        $data['produk'] = $this->M_auth->getItem($kode_transaksi);
+        $data['pembayaran'] = $this->M_auth->getPembayaran($kode_transaksi);
+
+        $this->load->view('landing/meta', $data);
+        $this->load->view('landing/header', $data);
+        $this->load->view('user/detail_pesanan', $data);
+        $this->load->view('landing/footer');
+    }
+
+    public function pesanan_diterima($kode_transaksi)
+    {
+        $update = [
+            'id_informasiStatus' => 6,
+        ];
+        $where = array(
+            'kode_transaksi' => $kode_transaksi
+        );
+        $result = $this->M_auth->edit_pemesanan($where, $update);
+        if ($result == true) {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => true,
+                'isi_pesan' => 'Berhasil Merubah Status'
+            ));
+            redirect('landing/lihat_pesanan');
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Gagal Merubah Status'
+            ));
+            redirect('landing/lihat_pesanan');
+        }
+    }
+
+    public function bayar_ulang()
+    {
+        $pesan = array();
+
+        $config['upload_path']          = 'assets/images/bukti_pembayaran';  // folder upload 
+        $config['allowed_types']        = 'pdf|jpg|png|jpeg'; // jenis file
+        $config['max_size']             = 8000;
+
+        $this->load->library('upload', $config);
+        $this->upload->initialize($config);
+        if (!$this->upload->do_upload('image') && $_FILES['image']['size'] != 0) //sesuai dengan name pada form 
+        {
+            array_push($pesan, $this->upload->display_errors());
+        }
+
+        $file = $this->upload->data();
+        $image = $_FILES['image']['size'] != 0 ? $file['file_name'] : $this->input->post('image1');
+
+        $update = [
+            'bukti_pembayaran' => $image
+        ];
+
+        $where = array(
+            'kode_transaksi' => htmlspecialchars($this->input->post('kode_transaksi'))
+        );
+
+        $this->M_auth->edit_pembayaran($where, $update);
+
+
+        $data = [
+            'id_informasiStatus' => 2
+        ];
+
+        $kode = array(
+            'kode_transaksi' => htmlspecialchars($this->input->post('kode_transaksi'))
+        );
+
+        $result = $this->M_auth->edit_pemesanan($kode, $data);
+        if ($result == true) {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => true,
+                'isi_pesan' => 'Berhasil Merubah Status'
+            ));
+            redirect('landing/lihat_pesanan');
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Gagal Merubah Status'
+            ));
+            redirect('landing/lihat_pesanan');
+        }
+    }
+
     public function logout()
     {
         session_destroy();

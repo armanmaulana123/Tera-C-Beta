@@ -38,69 +38,62 @@
 <div class="main-content">
     <section class="section">
         <div class="section-header">
-            <h1>Lihat Keranjang</h1>
+            <h1>Lihat Pesanan</h1>
         </div>
 
         <div class="section-body">
             <div class="card">
                 <div class="card-header">
-                    <h4>Keranjang</h4>
+                    <h4>Daftar Pesanan</h4>
                 </div>
                 <div class="card-body">
 
                     <div class="table-responsive mb-3">
                         <table class="table table-striped">
                             <tr>
-                                <th>Gambar Produk</th>
-                                <th>Nama Produk</th>
-                                <th>Jumlah</th>
-                                <th>Harga Satuan</th>
-                                <th>Sub-Total</th>
+                                <th>#</th>
+                                <th>Nama Pemesan</th>
+                                <th>Kode Transaksi</th>
+                                <th>Total Bayar</th>
+                                <th>Tanggal Pemesanan</th>
+                                <th>Status Pemesanan</th>
                                 <th>Action</th>
                             </tr>
-                            <?php if (count($keranjang) > 0) { ?>
-                                <?php foreach ($keranjang as $k) { ?>
+                            <?php if (count($pesanan) > 0) { ?>
+                                <?php $no = 1;
+                                foreach ($pesanan as $p) { ?>
                                     <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><?= $p['nama_user']  ?></td>
+                                        <td><?= $p['kode_transaksi']  ?></td>
+                                        <td><?= "Rp " . number_format($p['total_hargaPemesanan'], 0, ',', '.'); ?></td>
+                                        <td><?= $p['tgl_pemesanan']  ?></td>
+                                        <td><span class="badge bg-danger text-white"><?= $p['nama_status']  ?></span></td>
                                         <td>
-                                            <img alt="image" src="<?= base_url('assets/images/foto_produk/') . $k['gambar'] ?>" class="rounded-circle" width="50" title="<?= $k['name'] ?>">
-                                        </td>
-                                        <td>
-                                            <?= $k['name'] ?>
-                                        </td>
-                                        <td>
-                                            <?= $k['qty'] ?> Pcs
-                                        </td>
-                                        <td><?= "Rp " . number_format($k['price'], 0, ',', '.'); ?></td>
-                                        <td><?= "Rp " . number_format($k['subtotal'], 0, ',', '.'); ?></td>
-                                        <td>
-                                            <span><a href="<?= base_url('landing/hapus_item/') . $k['rowid'] ?>" class="btn btn-danger"><i class="fas fa-trash"></i></a></span>
+                                            <?php if ($p['id_informasiStatus'] == 1) { ?>
+                                                <span><a href="<?= base_url('landing/bayar/') . $p['kode_transaksi'] ?>" class="btn btn-warning">Bayar</a></span>
+                                            <?php } ?>
+                                            <span><a href="<?= base_url('landing/detail_pesanan/') . $p['kode_transaksi'] ?>" class="btn btn-warning">Detail</a></span>
                                         </td>
                                     </tr>
                                 <?php } ?>
                             <?php } else { ?>
                                 <tr>
-                                    <td colspan="5" align="center">Tidak Ada Item</td>
+                                <tr>
+                                    <td colspan="7" align="center">Tidak Ada Item</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="5" align="center">
+                                    <td colspan="7" align="center">
                                         <a href="<?= base_url('landing') ?>" class="btn btn-primary"><i class="fas fa-shopping-cart"></i>&nbsp; Belanja Sekarang</a>
                                     </td>
+                                </tr>
                                 </tr>
                             <?php } ?>
                         </table>
                     </div>
-                    <div class="float-right">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <h6>Total :</h6>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 class="text-primary"><?= "Rp " . number_format($this->cart->total(), 0, ',', '.'); ?></h5>
-                            </div>
-                        </div>
+                    <div class="text-center">
                         <div>
-                            <a href="<?= base_url('landing/hapus_keranjang') ?>" class="btn btn-outline-danger">Kosongkan Keranjang</a>
-                            <a href="<?= base_url('landing/checkout') ?>" class="btn btn-primary">Checkout</a>
+                            <a href="<?= base_url('landing') ?>" class="btn btn-primary">Kembali</a>
                         </div>
                     </div>
                 </div>

@@ -12,6 +12,9 @@
             <li class="menu-header">Produk</li>
             <li><a class="nav-link" href="<?= base_url('admin/daftar_produk') ?>"><i class="fas fa-box"></i> <span>Daftar Produk</span></a></li>
             <li><a class="nav-link" href="<?= base_url('admin/tambah_produk') ?>"><i class="fas fa-plus"></i> <span>Tambah Produk Baru</span></a></li>
+            <li class="menu-header">Data Pesanan</li>
+            <li><a class="nav-link" href="<?= base_url('admin/daftar_pesanan') ?>"><i class="fas fa-box"></i> <span>Daftar Pesanan</span></a></li>
+            <li><a class="nav-link" href="#"><i class="fas fa-plus"></i> <span>Tambah Produk Baru</span></a></li>
             <!-- <li class="nav-item dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-th"></i> <span>Bootstrap</span></a>
                 <ul class="dropdown-menu">

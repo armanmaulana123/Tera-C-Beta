@@ -364,6 +364,106 @@ class Admin extends CI_Controller
         }
     }
 
+    public function daftar_pesanan()
+    {
+        $data['title'] = 'Daftar Pesanan | Tera-C';
+        $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
+        $data['pesanan'] = $this->M_admin->data_pesanan();
+
+        $this->load->view('admin/meta', $data);
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/sidebar', $data);
+        $this->load->view('admin/daftar_pesanan', $data);
+        $this->load->view('admin/footer');
+    }
+
+    public function detail_pesanan($kode_transaksi)
+    {
+        $data['title'] = 'Daftar Pesanan | Tera-C';
+        $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
+        $data['data_pesanan'] = $this->M_admin->getPesanan($kode_transaksi);
+        $data['produk'] = $this->M_admin->getItem($kode_transaksi);
+        $data['pembayaran'] = $this->M_admin->getPembayaran($kode_transaksi);
+
+        $this->load->view('admin/meta', $data);
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/sidebar', $data);
+        $this->load->view('admin/detail_pesanan', $data);
+        $this->load->view('admin/footer');
+    }
+
+    public function konfirmasi_pembayaran($kode_transaksi)
+    {
+        $update = [
+            'id_informasiStatus' => 3,
+        ];
+        $where = array(
+            'kode_transaksi' => $kode_transaksi
+        );
+        $result = $this->M_admin->edit_pemesanan($where, $update);
+        if ($result == true) {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => true,
+                'isi_pesan' => 'Konfirmasi Pembayaran Berhasil'
+            ));
+            redirect('admin/daftar_pesanan');
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Konfirmasi Pembayaran Gagal'
+            ));
+            redirect('admin/daftar_pesanan');
+        }
+    }
+
+    public function tolak_pembayaran($kode_transaksi)
+    {
+        $update = [
+            'id_informasiStatus' => 4,
+        ];
+        $where = array(
+            'kode_transaksi' => $kode_transaksi
+        );
+        $result = $this->M_admin->edit_pemesanan($where, $update);
+        if ($result == true) {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => true,
+                'isi_pesan' => 'Tolak Pembayaran Berhasil'
+            ));
+            redirect('admin/daftar_pesanan');
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Tolak Pembayaran Gagal'
+            ));
+            redirect('admin/daftar_pesanan');
+        }
+    }
+
+    public function kirim_pesanan($kode_transaksi)
+    {
+        $update = [
+            'id_informasiStatus' => 5,
+        ];
+        $where = array(
+            'kode_transaksi' => $kode_transaksi
+        );
+        $result = $this->M_admin->edit_pemesanan($where, $update);
+        if ($result == true) {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => true,
+                'isi_pesan' => 'Berhasil Merubah Status'
+            ));
+            redirect('admin/daftar_pesanan');
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Gagal Merubah Status'
+            ));
+            redirect('admin/daftar_pesanan');
+        }
+    }
+
     public function logout()
     {
         session_destroy();
