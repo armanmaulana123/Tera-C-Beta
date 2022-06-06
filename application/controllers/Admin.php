@@ -394,6 +394,17 @@ class Admin extends CI_Controller
 
     public function konfirmasi_pembayaran($kode_transaksi)
     {
+        $data['data_pesanan'] = $this->M_admin->getPesanan($kode_transaksi);
+        $data['produk'] = $this->M_admin->getItem($kode_transaksi);
+        foreach ($data['produk'] as $p) {
+            $total = $p['jumlah_ketersediaan'] - $p['jumlah_terasi'];
+            $data = array(
+                'jumlah_ketersediaan' => $total
+            );
+            $this->db->where('kode_produk', $p['kode_produk']);
+            $this->db->update('ketersediaanterasi', $data);
+        }
+
         $update = [
             'id_informasiStatus' => 3,
         ];

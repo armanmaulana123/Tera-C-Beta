@@ -253,6 +253,16 @@ class Landing extends CI_Controller
             $harga = htmlspecialchars($this->input->post('harga'));
             $gambar = htmlspecialchars($this->input->post('gambar'));
 
+            $data_produk = $this->M_auth->getDataProduk($kode_produk);
+
+            if ($qty > $data_produk['jumlah_ketersediaan']) {
+                $this->session->set_flashdata('pesan', array(
+                    'status_pesan' => false,
+                    'isi_pesan' => 'Jumlah Stok Tidak Mencukupi'
+                ));
+                redirect('landing/detail_produk/' . $kode_produk);
+            }
+
             $data = array(
                 'id' => $kode_produk,
                 'name' => $nama,

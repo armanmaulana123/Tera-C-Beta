@@ -59,6 +59,7 @@
                                         <p class="card-text mb-3">Tanggal Produksi</p>
                                         <p class="card-text mb-3">Terakhir Restock</p>
                                         <p class="card-text mb-3">Kuantitas</p>
+
                                     </div>
                                     <div class="col-md-9">
                                         <p class="card-text text-dark mb-3"><?= $data_produk['ukuran_terasi'] ?> Cm.</p>
@@ -71,15 +72,14 @@
                                                 <input type="hidden" name="nama" value="<?= $data_produk['nama_terasi'] ?>">
                                                 <input type="hidden" name="harga" value="<?= $data_produk['harga_terasi'] ?>">
                                                 <input type="hidden" name="gambar" value="<?= $data_produk['foto_terasi'] ?>">
-
                                             </div>
                                             <div class="col-md-9">
-                                                <p class="card-text text-dark mb-3">tersisa <?= $data_produk['jumlah_ketersediaan'] ?> Pcs.</p>
+                                                <p class="card-text text-dark mb-3">tersisa <?= $data_produk['jumlah_ketersediaan'] ?> Pcs. <?php if ($data_produk['jumlah_ketersediaan'] < 5) { ?><i class="fas fa-info-circle text-danger"></i> <?php } ?></p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Masukkan Keranjang</button>
+                                <button type="submit" class="btn btn-primary">Masukkan Keranjang</button>&nbsp;<?php if ($data_produk['jumlah_ketersediaan'] < 5) { ?><a href="#" class="btn btn-outline-primary">Cek Proses Pembuatan</a><?php } ?>
                             </div>
                         </form>
                     </div>
