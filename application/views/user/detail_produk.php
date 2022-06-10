@@ -79,7 +79,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Masukkan Keranjang</button>&nbsp;<?php if ($data_produk['status_pembuatan'] == 1) { ?><a href="<?= base_url('landing/proses_pembuatan/') . $data_produk['kode_produk'] ?>" class="btn btn-outline-primary">Cek Proses Pembuatan</a><?php } ?>
+                                <button type="submit" class="btn btn-primary">Masukkan Keranjang</button>&nbsp;<?php if ($data_produk['status_pembuatan'] != 8) { ?><a href="<?= base_url('landing/proses_pembuatan/') . $data_produk['kode_produk'] ?>" class="btn btn-outline-primary">Cek Proses Pembuatan</a><?php } ?>
                             </div>
                         </form>
                     </div>
