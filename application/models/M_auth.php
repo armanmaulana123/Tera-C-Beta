@@ -124,4 +124,37 @@ class M_auth extends CI_Model
         $query = $this->db->get();
         return $query->row_array();
     }
+
+    function getProses()
+    {
+        $this->db->select('*');
+        $this->db->from('statuspembuatanterasi');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function tambah_aduan($data)
+    {
+        $this->db->insert('aduanpembeli', $data);
+    }
+
+    function getDataAduan($id_user)
+    {
+        $this->db->select('*');
+        $this->db->from('aduanpembeli d');
+        $this->db->join('user u', 'u.id_user = d.id_pembeli');
+        $this->db->where('id_pembeli', $id_user);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function getAduan($kode_aduan)
+    {
+        $this->db->select('*');
+        $this->db->from('aduanpembeli d');
+        $this->db->join('user u', 'u.id_user = d.id_pembeli');
+        $this->db->where('kode_aduan', $kode_aduan);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
 }

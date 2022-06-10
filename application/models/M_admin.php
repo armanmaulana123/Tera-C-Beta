@@ -25,7 +25,8 @@ class M_admin extends CI_Model
     function tampil_produk()
     {
         $this->db->select('*');
-        $this->db->from('ketersediaanterasi');
+        $this->db->from('ketersediaanterasi p');
+        $this->db->join('statuspembuatanterasi k', 'k.id_statusPembuatanTerasi = p.status_pembuatan');
         $query = $this->db->get();
         return $query->result_array();
     }
@@ -33,7 +34,8 @@ class M_admin extends CI_Model
     function jumlah_produk()
     {
         $this->db->select('*');
-        $this->db->from('ketersediaanterasi');
+        $this->db->from('ketersediaanterasi p');
+        $this->db->join('statuspembuatanterasi k', 'k.id_statusPembuatanTerasi = p.status_pembuatan');
         $query = $this->db->get();
         return $query->num_rows();
     }
@@ -41,7 +43,8 @@ class M_admin extends CI_Model
     function data_produk($number, $offset, $keyword = '')
     {
         $this->db->select('*');
-        $this->db->from('ketersediaanterasi');
+        $this->db->from('ketersediaanterasi p');
+        $this->db->join('statuspembuatanterasi k', 'k.id_statusPembuatanTerasi = p.status_pembuatan');
         if (!empty($keyword)) {
             $this->db->like('id_ketersediaanTerasi', $keyword);
             $this->db->or_like('nama_terasi', $keyword);
@@ -61,6 +64,7 @@ class M_admin extends CI_Model
         $this->db->select('*');
         $this->db->from('ketersediaanterasi');
         $this->db->join('user', 'user.id_user = ketersediaanterasi.id_penjual');
+        $this->db->join('statuspembuatanterasi', 'statuspembuatanterasi.id_statusPembuatanTerasi = ketersediaanterasi.status_pembuatan');
         $this->db->where('kode_produk', $kode_produk);
         $query = $this->db->get();
         return $query->row_array();
@@ -131,5 +135,169 @@ class M_admin extends CI_Model
     function edit_pemesanan($where, $data)
     {
         return $this->db->update('detaildatapemesanan', $data, $where);
+    }
+
+    function getStatus()
+    {
+        $this->db->select('*');
+        $this->db->from('statuspembuatanterasi');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function update_produk($where, $data)
+    {
+        return $this->db->update('ketersediaanterasi', $data, $where);
+    }
+
+    function getKeuangan()
+    {
+        $this->db->select('*');
+        $this->db->from('laporankeuangan');
+        $this->db->order_by('id_laporanKeuangan', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
+    function tambah_keuangan($data)
+    {
+        return $this->db->insert('laporankeuangan', $data);
+    }
+
+    function data_keuangan()
+    {
+        $this->db->select('*');
+        $this->db->from('laporankeuangan');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function total_pesanan()
+    {
+        $this->db->select('*');
+        $this->db->from('detaildatapemesanan');
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    function total_pesanan_masuk()
+    {
+        $this->db->select('*');
+        $this->db->from('detaildatapemesanan');
+        $this->db->where('id_informasiStatus >=', 1);
+        $this->db->where('id_informasiStatus <=', 3);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    function total_pesanan_dikirim()
+    {
+        $this->db->select('*');
+        $this->db->from('detaildatapemesanan');
+        $this->db->where('id_informasiStatus', 5);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    function total_pesanan_selesai()
+    {
+        $this->db->select('*');
+        $this->db->from('detaildatapemesanan');
+        $this->db->where('id_informasiStatus', 6);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    function pemasukan()
+    {
+        $this->db->select_sum('nominal');
+        $this->db->from('laporankeuangan');
+        $this->db->where('jenis', 'Pemasukan');
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
+    function pengeluaran()
+    {
+        $this->db->select_sum('nominal');
+        $this->db->from('laporankeuangan');
+        $this->db->where('jenis', 'Pengeluaran');
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
+    function total_user()
+    {
+        $this->db->select('*');
+        $this->db->from('user');
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    function total_admin()
+    {
+        $this->db->select('*');
+        $this->db->from('user');
+        $this->db->where('level_user', 1);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    function total_pelanggan()
+    {
+        $this->db->select('*');
+        $this->db->from('user');
+        $this->db->where('level_user', 2);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    function pesanan_dashboard()
+    {
+        $this->db->select('*');
+        $this->db->from('detaildatapemesanan d');
+        $this->db->join('informasistatuspemesananterasi i', 'd.id_informasiStatus = i.id_informasiStatus');
+        $this->db->join('user u', 'u.id_user = d.id_pembeli');
+        $this->db->where('d.id_informasiStatus >=', 1);
+        $this->db->where('d.id_informasiStatus <=', 2);
+        $this->db->order_by('id_detaildataPemesanan', 'DESC');
+        $this->db->limit(5);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function produk_dashboard()
+    {
+        $this->db->select('*');
+        $this->db->from('ketersediaanterasi');
+        $this->db->order_by('id_ketersediaanTerasi', 'DESC');
+        $this->db->limit(3);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function getDataAduan()
+    {
+        $this->db->select('*');
+        $this->db->from('aduanpembeli d');
+        $this->db->join('user u', 'u.id_user = d.id_pembeli');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function update_aduan($where, $data)
+    {
+        return $this->db->update('aduanpembeli', $data, $where);
+    }
+
+    function getAduan($kode_aduan)
+    {
+        $this->db->select('*');
+        $this->db->from('aduanpembeli d');
+        $this->db->join('user u', 'u.id_user = d.id_pembeli');
+        $this->db->where('kode_aduan', $kode_aduan);
+        $query = $this->db->get();
+        return $query->row_array();
     }
 }

@@ -34,15 +34,15 @@
 
                                         <td><?= $p['kode_produk']; ?></td>
 
-                                        <td><img src="<?= base_url('assets/images/foto_produk/') . $p['foto_terasi']; ?>" width="50" class="rounded-circle"></td>
+                                        <td><img src="<?= base_url('assets/images/foto_produk/') . $p['foto_terasi']; ?>" width="50"></td>
 
                                         <td><?= $p['nama_terasi']; ?></td>
 
-                                        <td><?= $p['harga_terasi']; ?></td>
+                                        <td><?= "Rp " . number_format($p['harga_terasi'], 0, ',', '.'); ?></td>
 
                                         <td><?= $p['jumlah_ketersediaan']; ?></td>
 
-                                        <td><span class="btn btn-info" title="Detail Produk"><a href="<?= base_url('admin/detail_produk/') . $p['kode_produk'] ?>"><i class="fas fa-search text-light"></i></a></span>&nbsp;<span class="btn btn-warning" title="Tambah Produk"><a href="javascript:;" data-id="<?= $p['kode_produk'] ?>" data-nama="<?= $p['nama_terasi'] ?>" data-toggle="modal" data-target="#tambahQty"><i class="fas fa-plus text-light"></i></a></span>&nbsp;<span class="btn btn-success" title="Edit Produk"><a href="<?= base_url('admin/edit_produk/') . $p['kode_produk'] ?>"><i class="fas fa-pen text-light"></i></a></span>&nbsp;<span class="btn btn-danger" title="Hapus Produk"><a href="<?= base_url('admin/hapus_produk/') . $p['kode_produk'] ?>" onclick="return confirm('Yakin ingin menghapus data ini?')"><i class="fas fa-trash text-light"></i></a></span></td>
+                                        <td><span class="btn btn-info" title="Detail Produk"><a href="<?= base_url('admin/detail_produk/') . $p['kode_produk'] ?>"><i class="fas fa-search text-light"></i></a></span>&nbsp;<span class="btn btn-success" title="Edit Produk"><a href="<?= base_url('admin/edit_produk/') . $p['kode_produk'] ?>"><i class="fas fa-pen text-light"></i></a></span>&nbsp;<span class="btn btn-danger" title="Hapus Produk"><a href="<?= base_url('admin/hapus_produk/') . $p['kode_produk'] ?>" onclick="return confirm('Yakin ingin menghapus data ini?')"><i class="fas fa-trash text-light"></i></a></span></td>
                                     </tr>
                                 <?php } ?>
                             <?php else : ?>
@@ -59,10 +59,11 @@
                             <?php endif ?>
                         </tbody>
                     </table>
-                    <div class="text-center mb-3">
-                        <div>
-                            <a href="<?= base_url('admin') ?>" class="btn btn-primary">Kembali</a>
-                        </div>
+                    <?= $Pagination ?>
+                </div>
+                <div class="text-center mb-3">
+                    <div>
+                        <a href="<?= base_url('admin') ?>" class="btn btn-primary">Kembali</a>
                     </div>
                 </div>
             </div>

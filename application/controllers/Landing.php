@@ -8,6 +8,7 @@ class Landing extends CI_Controller
     {
         parent::__construct();
         $this->load->model('M_auth');
+        $this->load->helper('tgl_indo');
     }
 
     public function index()
@@ -549,6 +550,111 @@ class Landing extends CI_Controller
             ));
             redirect('landing/lihat_pesanan');
         }
+    }
+
+    public function proses_pembuatan($kode_produk)
+    {
+        $data['title'] = 'Proses Pembuatan | Tera-C';
+        $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        $data['keranjang'] = $this->cart->contents();
+        $data['produk'] = $this->M_auth->getDataProduk($kode_produk);
+        $data['status'] = $this->M_auth->getProses();
+
+        if (!empty($data['data_user'])) {
+            $this->load->view('landing/meta', $data);
+            $this->load->view('landing/header', $data);
+            $this->load->view('user/proses_pembuatan', $data);
+            $this->load->view('landing/footer');
+        } else {
+            redirect('landing/login');
+        }
+    }
+
+    public function aduan_pembeli()
+    {
+        $data['title'] = 'Aduan Pembeli | Tera-C';
+        $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        $data['keranjang'] = $this->cart->contents();
+        $data['aduan'] = $this->M_auth->getDataAduan($this->session->userdata('id_user'));
+
+        $this->load->view('landing/meta', $data);
+        $this->load->view('landing/header', $data);
+        $this->load->view('user/aduan_pembeli', $data);
+        $this->load->view('landing/footer');
+    }
+
+    public function form_aduan()
+    {
+        $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        if (!empty($data['data_user'])) {
+            $data['title'] = 'Form Aduan | Tera-C';
+            $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+            $data['keranjang'] = $this->cart->contents();
+
+            $this->load->view('landing/meta', $data);
+            $this->load->view('landing/header', $data);
+            $this->load->view('user/form_aduan', $data);
+            $this->load->view('landing/footer');
+        } else {
+            redirect('landing/login');
+        }
+    }
+
+    public function proses_aduan()
+    {
+
+        $pesan = array();
+        $gambar = htmlspecialchars($this->input->post('bukti_aduan', true));
+        $kode = $this->input->post('kode_aduan');
+        $bukti = '';
+
+        // if (!empty($gambar)) {
+        $config['upload_path']          = 'assets/images/bukti_aduan/';  // folder upload 
+        $config['allowed_types']        = 'jpg|png|jpeg'; // jenis file
+        $config['max_size']             = 8000;
+        $config['file_name']            = $this->input->post('kode_aduan');
+
+        $this->load->library('upload', $config);
+        $this->upload->initialize($config);
+        if (!$this->upload->do_upload('bukti_aduan')) //sesuai dengan name pada form 
+        {
+            array_push($pesan, $this->upload->display_errors());
+        }
+        $file = $this->upload->data();
+        $bukti = $file['file_name'];
+        // }
+
+        $data = [
+            'kode_aduan' => $kode,
+            'id_pembeli' => htmlspecialchars($this->input->post('id_pembeli', true)),
+            'desk_aduan' => htmlspecialchars($this->input->post('aduan', true)),
+            'bukti_aduan' => $bukti,
+            'status_aduan' => 1,
+            'tgl_aduan' => date('Y-m-d')
+        ];
+
+        // var_dump($data);
+        // die;
+
+        $this->M_auth->tambah_aduan($data);
+        $this->session->set_flashdata('pesan', array(
+            'status_pesan' => true,
+            'isi_pesan' => 'Aduan Berhasil Diajukan'
+        ));
+        redirect('landing/aduan_pembeli');
+    }
+
+    public function detail_aduan($kode_aduan)
+    {
+        $data['title'] = 'Detail Aduan| Tera-C';
+        $data['data_user'] = $this->M_auth->data_user($this->session->userdata('id_user'));
+        $data['keranjang'] = $this->cart->contents();
+        $data['aduan'] = $this->M_auth->getAduan($kode_aduan);
+
+        $this->load->view('landing/meta', $data);
+        $this->load->view('landing/header', $data);
+        $this->load->view('user/detail_aduan', $data);
+        $this->load->view('landing/footer');
     }
 
     public function logout()

@@ -63,8 +63,8 @@
                                     </div>
                                     <div class="col-md-9">
                                         <p class="card-text text-dark mb-3"><?= $data_produk['ukuran_terasi'] ?> Cm.</p>
-                                        <p class="card-text text-dark mb-3"><?= $data_produk['tgl_produksi'] ?></p>
-                                        <p class="card-text text-dark mb-3"><?= $data_produk['tgl_restock'] ?></p>
+                                        <p class="card-text text-dark mb-3"><?= date_indo($data_produk['tgl_produksi']); ?></p>
+                                        <p class="card-text text-dark mb-3"><?= date_indo($data_produk['tgl_restock']); ?></p>
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <input type="number" name="qty" class="form-control" min="1">
@@ -74,12 +74,12 @@
                                                 <input type="hidden" name="gambar" value="<?= $data_produk['foto_terasi'] ?>">
                                             </div>
                                             <div class="col-md-9">
-                                                <p class="card-text text-dark mb-3">tersisa <?= $data_produk['jumlah_ketersediaan'] ?> Pcs. <?php if ($data_produk['jumlah_ketersediaan'] < 5) { ?><i class="fas fa-info-circle text-danger"></i> <?php } ?></p>
+                                                <p class="card-text text-dark mb-3">tersisa <?= $data_produk['jumlah_ketersediaan'] ?> Pcs. <?php if ($data_produk['jumlah_ketersediaan'] <= 5) { ?><i class="fas fa-info-circle text-danger" title="Stok Terbatas"></i> <?php } ?></p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Masukkan Keranjang</button>&nbsp;<?php if ($data_produk['jumlah_ketersediaan'] < 5) { ?><a href="#" class="btn btn-outline-primary">Cek Proses Pembuatan</a><?php } ?>
+                                <button type="submit" class="btn btn-primary">Masukkan Keranjang</button>&nbsp;<?php if ($data_produk['status_pembuatan'] == 1) { ?><a href="<?= base_url('landing/proses_pembuatan/') . $data_produk['kode_produk'] ?>" class="btn btn-outline-primary">Cek Proses Pembuatan</a><?php } ?>
                             </div>
                         </form>
                     </div>

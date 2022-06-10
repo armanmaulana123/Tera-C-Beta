@@ -37,37 +37,51 @@
 <!-- Main Content -->
 <div class="main-content">
     <section class="section">
-        <div class="section-header">
-            <h1>Daftar Produk</h1>
-        </div>
 
         <div class="section-body">
-            <?php if (count($data_produk) > 0) { ?>
-                <div class="row">
-                    <?php foreach ($data_produk as $dp) { ?>
-                        <div class="col-md-4">
-                            <div class="card" style="width: 18rem;">
-                                <img src="<?= base_url('assets/images/foto_produk/') . $dp['foto_terasi'] ?>" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title"><?= $dp['nama_terasi'] ?></h5>
-                                    <p class="card-text">Terasi ini memiliki ukuran <?= $dp['ukuran_terasi'] ?> Cm.</p>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <?php $rupiah = "Rp " . number_format($dp['harga_terasi'], 0, ',', '.'); ?>
-                                    <li class="list-group-item">Harga : <?= $rupiah ?></li>
-                                    <li class="list-group-item">Stok : <?= $dp['jumlah_ketersediaan'] ?> Pcs.</li>
-                                    <li class="list-group-item">Tanggal Produksi : <?= date_indo($dp['tgl_produksi']); ?></li>
-                                </ul>
-                                <div class="card-body">
-                                    <a href="<?= base_url('landing/detail_produk/') . $dp['kode_produk'] ?>" class="btn btn-primary stretched-link">Beli Sekarang</a>
+            <div class="invoice">
+                <div class="invoice-print">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="invoice-title">
+                                <h2>Detail Aduan </h2>
+                                <!-- <span class="badge bg-warning text-white"><?= $data_pesanan['nama_status'] ?></span> -->
+                                <div class="invoice-number">Aduan #<?= $aduan['kode_aduan']; ?></div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <address>
+                                        <strong>Data Diri Pelanggan:</strong><br>
+                                        <?= $aduan['nama_user']; ?><br>
+                                        <?= $aduan['no_telp']; ?><br>
+                                        <?= $aduan['email']; ?><br>
+                                        <?= $aduan['alamat']; ?>
+                                    </address>
+                                    <address>
+                                        <strong>Tanggal Aduan:</strong><br>
+                                        <?= date_indo($aduan['tgl_aduan']) ?><br><br>
+                                    </address>
                                 </div>
                             </div>
                         </div>
-                    <?php } ?>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="section-title">Aduan</div>
+                            <p class="section-lead mt-3"><?= $aduan['desk_aduan'] ?></p>
+                        </div>
+                    </div>
                 </div>
-            <?php } else { ?>
-                <h5 align="center">Tidak Ada Produk.</h5>
-            <?php } ?>
+                <hr>
+                <div class="text-md-center">
+                    <!-- <div class="float-lg-left mb-lg-0 mb-3">
+                            <button class="btn btn-warning btn-icon icon-left"><i class="fas fa-print"></i> Print</button>
+                        </div> -->
+                    <a href="<?= base_url('landing/aduan_pembeli') ?>" class="btn btn-danger btn-icon icon-left">Kembali</a>
+                </div>
+            </div>
         </div>
     </section>
 </div>

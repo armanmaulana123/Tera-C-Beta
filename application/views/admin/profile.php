@@ -49,7 +49,7 @@
                     </div>
                     <div class="card-footer text-center">
                         <div class="font-weight-bold mb-2">Tanggal Daftar </div>
-                        <div class="font-weight-bold mb-2"><?= date($data_user['tgl_daftar']); ?></div>
+                        <div class="font-weight-bold mb-2"><?= date_indo($data_user['tgl_daftar']); ?></div>
                         <a href="<?= base_url('admin/edit_profile') ?>" class="btn btn-primary">
                             Edit Profile
                         </a>

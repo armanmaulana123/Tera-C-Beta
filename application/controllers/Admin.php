@@ -7,12 +7,30 @@ class Admin extends CI_Controller
     {
         parent::__construct();
         $this->load->model('M_admin');
+        $this->load->helper('tgl_indo');
+        $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
+        if (empty($data['data_user'])) {
+            redirect('landing/login');
+        }
     }
 
     public function index()
     {
         $data['title'] = 'Dashboard | Tera-C';
         $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
+        $data['total_pesanan'] = $this->M_admin->total_pesanan();
+        $data['pesanan_masuk'] = $this->M_admin->total_pesanan_masuk();
+        $data['pesanan_dikirim'] = $this->M_admin->total_pesanan_dikirim();
+        $data['pesanan_selesai'] = $this->M_admin->total_pesanan_selesai();
+        $data['pemasukan'] = $this->M_admin->pemasukan();
+        $data['pengeluaran'] = $this->M_admin->pengeluaran();
+        $keuangan = $this->M_admin->getKeuangan();
+        $data['saldo'] = $keuangan['saldo_terakhir'];
+        $data['total_user'] = $this->M_admin->total_user();
+        $data['total_admin'] = $this->M_admin->total_admin();
+        $data['total_pelanggan'] = $this->M_admin->total_pelanggan();
+        $data['pesanan'] = $this->M_admin->pesanan_dashboard();
+        $data['produk'] = $this->M_admin->produk_dashboard();
 
         $this->load->view('admin/meta', $data);
         $this->load->view('admin/header', $data);
@@ -153,6 +171,56 @@ class Admin extends CI_Controller
         $this->load->view('admin/header', $data);
         $this->load->view('admin/sidebar', $data);
         $this->load->view('admin/daftar_produk', $data);
+        $this->load->view('admin/footer');
+    }
+
+    public function restock_produk($start = 0)
+    {
+        $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
+        $data['title'] = 'Daftar Produk';
+
+        $q = isset($_GET['search']) ? $_GET['search'] : '';
+        $data['daftar_produk'] = $this->M_admin->tampil_produk();
+
+        // $this->load->database();
+        $jumlah_data = $this->M_admin->jumlah_produk($q);
+
+        $this->load->library('pagination');
+        $config['base_url'] = base_url('admin/daftar_produk');
+        $config['total_rows'] = $jumlah_data;
+        $config['per_page'] = 20;
+        $config['full_tag_open']   = '<ul class="pagination justify-content-end">';
+        $config['full_tag_close']  = '</ul>';
+
+        $config['first_link']      = 'First';
+        $config['first_tag_open']  = '<li class="page-link tabindex="-1" aria-disabled="true"">';
+        $config['first_tag_close'] = '</li>';
+
+        $config['last_link']       = 'Last';
+        $config['last_tag_open']   = '<li class="page-link">';
+        $config['last_tag_close']  = '</li>';
+
+        $config['next_tag_open']   = '<li class="page-link">';
+        $config['next_tag_close']  = '</li>';
+
+        $config['prev_tag_open']   = '<li class="page-link">';
+        $config['prev_tag_close']  = '</li>';
+
+        $config['cur_tag_open']    = '<li class="active page-item"><a class="page-link" href="#">';
+        $config['cur_tag_close']   = '</a></li>';
+
+        $config['num_tag_open']    = '<li class="page-link">';
+        $config['num_tag_close']   = '</li>';
+        $this->pagination->initialize($config);
+        $data['page_produk'] = $this->M_admin->data_produk($config['per_page'], $start, $q);
+        $data['start'] = $start;
+        $data['keyword'] = $q;
+        $data['Pagination'] = $this->pagination->create_links();
+
+        $this->load->view('admin/meta', $data);
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/sidebar', $data);
+        $this->load->view('admin/restock_produk', $data);
         $this->load->view('admin/footer');
     }
 
@@ -395,7 +463,9 @@ class Admin extends CI_Controller
     public function konfirmasi_pembayaran($kode_transaksi)
     {
         $data['data_pesanan'] = $this->M_admin->getPesanan($kode_transaksi);
+        $nominal = $data['data_pesanan']['total_hargaPemesanan'];
         $data['produk'] = $this->M_admin->getItem($kode_transaksi);
+        $dataKeuangan = $this->M_admin->getKeuangan();
         foreach ($data['produk'] as $p) {
             $total = $p['jumlah_ketersediaan'] - $p['jumlah_terasi'];
             $data = array(
@@ -404,6 +474,23 @@ class Admin extends CI_Controller
             $this->db->where('kode_produk', $p['kode_produk']);
             $this->db->update('ketersediaanterasi', $data);
         }
+
+        if ($dataKeuangan == null) {
+            $saldo = $nominal;
+        } else {
+            $saldo = $dataKeuangan['saldo_terakhir'] + $nominal;
+        }
+
+        $keuangan = [
+            'nominal' => $nominal,
+            'jenis' => 'Pemasukan',
+            'saldo_terakhir' => $saldo,
+            'tanggal' => date('Y-m-d'),
+            'bulan' => date('F'),
+            'keterangan' => 'Pemasukan Dari Pemesanan Dengan Kode ' . $kode_transaksi
+        ];
+
+        $this->M_admin->tambah_keuangan($keuangan);
 
         $update = [
             'id_informasiStatus' => 3,
@@ -473,6 +560,137 @@ class Admin extends CI_Controller
             ));
             redirect('admin/daftar_pesanan');
         }
+    }
+
+    public function proses_pembuatan($kode_produk)
+    {
+        $data['title'] = 'Proses Pembuatan | Tera-C';
+        $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
+        $data['produk'] = $this->M_admin->getDataProduk($kode_produk);
+        $data['status'] = $this->M_admin->getStatus();
+
+        $this->load->view('admin/meta', $data);
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/sidebar', $data);
+        $this->load->view('admin/proses_pembuatan', $data);
+        $this->load->view('admin/footer');
+    }
+
+    public function update_produk()
+    {
+        $dataKeuangan = $this->M_admin->getKeuangan();
+        $nominal = htmlspecialchars($this->input->post('pengeluaran', true));
+        $kode_produk = htmlspecialchars($this->input->post('kode_produk', true));
+        $status = htmlspecialchars($this->input->post('status_pembuatan', true));
+        $stok = htmlspecialchars($this->input->post('stok_produk', true));
+        $stok_hasil = htmlspecialchars($this->input->post('jumlah_stok', true));
+        $pembuatan = 0;
+
+        if ($status == 8) {
+            $pembuatan = 1;
+        } elseif ($status == 1) {
+            $pembuatan = 2;
+        } elseif ($status == 2) {
+            $pembuatan = 3;
+        } elseif ($status == 3) {
+            $pembuatan = 4;
+        } elseif ($status == 4) {
+            $pembuatan = 5;
+        } elseif ($status == 5) {
+            $pembuatan = 6;
+        } elseif ($status == 6) {
+            $pembuatan = 7;
+        } elseif ($status == 7) {
+            $pembuatan = 8;
+        }
+
+        if ($status == 7) {
+            $stok_baru = (int)$stok + (int)$stok_hasil;
+            $update = [
+                'jumlah_ketersediaan' => $stok_baru,
+                'status_pembuatan' => $pembuatan,
+                'tgl_restock' => date('Y-m-d')
+            ];
+        } else {
+            $update = [
+                'status_pembuatan' => $pembuatan
+            ];
+        }
+
+        $where = array(
+            'kode_produk' => $kode_produk
+        );
+
+
+        $this->M_admin->update_produk($where, $update);
+
+        $saldo = $dataKeuangan['saldo_terakhir'] - (int)$nominal;
+
+        $keuangan = [
+            'nominal' => $nominal,
+            'jenis' => 'Pengeluaran',
+            'saldo_terakhir' => $saldo,
+            'tanggal' => date('Y-m-d'),
+            'bulan' => date('F'),
+            'keterangan' => 'Pengeluaran Pembuatan Terasi Dengan Kode Produk ' . $kode_produk
+        ];
+
+        $this->M_admin->tambah_keuangan($keuangan);
+
+        redirect('admin/proses_pembuatan/' . $kode_produk);
+    }
+
+    public function laporan_keuangan()
+    {
+        $data['title'] = 'Laporan Keuangan | Tera-C';
+        $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
+        $data['keuangan'] = $this->M_admin->data_keuangan();
+
+        $this->load->view('admin/meta', $data);
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/sidebar', $data);
+        $this->load->view('admin/laporan_keuangan', $data);
+        $this->load->view('admin/footer');
+    }
+
+    public function aduan_pembeli()
+    {
+        $data['title'] = 'Laporan Keuangan | Tera-C';
+        $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
+        $data['aduan'] = $this->M_admin->getDataAduan();
+
+        $this->load->view('admin/meta', $data);
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/sidebar', $data);
+        $this->load->view('admin/aduan_pembeli', $data);
+        $this->load->view('admin/footer');
+    }
+
+    public function baca_aduan($kode_aduan)
+    {
+        $update = [
+            'status_aduan' => 2
+        ];
+
+        $where = array(
+            'kode_aduan' => $kode_aduan
+        );
+
+        $this->M_admin->update_aduan($where, $update);
+        redirect('admin/detail_aduan/' . $kode_aduan);
+    }
+
+    public function detail_aduan($kode_produk)
+    {
+        $data['title'] = 'Laporan Keuangan | Tera-C';
+        $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
+        $data['aduan'] = $this->M_admin->getAduan($kode_produk);
+
+        $this->load->view('admin/meta', $data);
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/sidebar', $data);
+        $this->load->view('admin/detail_aduan', $data);
+        $this->load->view('admin/footer');
     }
 
     public function logout()

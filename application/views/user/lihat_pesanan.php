@@ -67,7 +67,7 @@
                                         <td><?= $p['nama_user']  ?></td>
                                         <td><?= $p['kode_transaksi']  ?></td>
                                         <td><?= "Rp " . number_format($p['total_hargaPemesanan'], 0, ',', '.'); ?></td>
-                                        <td><?= $p['tgl_pemesanan']  ?></td>
+                                        <td><?= date_indo($p['tgl_pemesanan']);  ?></td>
                                         <td><span class="badge bg-danger text-white"><?= $p['nama_status']  ?></span></td>
                                         <td>
                                             <?php if ($p['id_informasiStatus'] == 1) { ?>
