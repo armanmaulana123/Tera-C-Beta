@@ -28,7 +28,7 @@ if (!empty($pesan)) {
 <div class="navbar-bg"></div>
 <nav class="navbar navbar-expand-lg main-navbar">
     <form class="form-inline mr-auto">
-        <ul class="navbar-nav mr-3">
+        <!-- <ul class="navbar-nav mr-3">
             <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
             <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i class="fas fa-search"></i></a></li>
         </ul>
@@ -93,10 +93,10 @@ if (!empty($pesan)) {
                     </a>
                 </div>
             </div>
-        </div>
+        </div> -->
     </form>
     <ul class="navbar-nav navbar-right">
-        <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link nav-link-lg message-toggle beep"><i class="far fa-envelope"></i></a>
+        <!-- <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link nav-link-lg message-toggle beep"><i class="far fa-envelope"></i></a>
             <div class="dropdown-menu dropdown-list dropdown-menu-right">
                 <div class="dropdown-header">Messages
                     <div class="float-right">
@@ -220,7 +220,7 @@ if (!empty($pesan)) {
                     <a href="#">View All <i class="fas fa-chevron-right"></i></a>
                 </div>
             </div>
-        </li>
+        </li> -->
         <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                 <img alt="image" src="<?= base_url(); ?>assets/images/img_profil/<?= $data_user['foto_profil'] ?>" class="rounded-circle mr-1">
                 <div class="d-sm-none d-lg-inline-block"><?= $data_user['nama_user'] ?></div>
@@ -230,12 +230,12 @@ if (!empty($pesan)) {
                 <a href="<?= base_url('admin/profile') ?>" class="dropdown-item has-icon">
                     <i class="far fa-user"></i> Profile
                 </a>
-                <a href="features-activities.html" class="dropdown-item has-icon">
+                <!-- <a href="features-activities.html" class="dropdown-item has-icon">
                     <i class="fas fa-bolt"></i> Activities
                 </a>
                 <a href="features-settings.html" class="dropdown-item has-icon">
                     <i class="fas fa-cog"></i> Settings
-                </a>
+                </a> -->
                 <div class="dropdown-divider"></div>
                 <a href="<?= base_url('admin/logout') ?>" class="dropdown-item has-icon text-danger">
                     <i class="fas fa-sign-out-alt"></i> Logout
