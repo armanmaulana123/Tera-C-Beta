@@ -4,6 +4,7 @@
         <div class="card">
             <div class="card-header">
                 <h4>Aduan Yang Diajukan</h4>
+                <a href="<?= base_url('landing/form_aduan') ?>" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Aduan</a>
             </div>
         </div>
         <?php if (count($aduan) > 0) { ?>

@@ -109,7 +109,8 @@ class Landing extends CI_Controller
             'no_telp' => htmlspecialchars($this->input->post('no_telp', true)),
             'alamat' => htmlspecialchars($this->input->post('alamat', true)),
             'level_user' => 2,
-            'foto_profil' => "default.jpg"
+            'foto_profil' => "default.jpg",
+            'tgl_daftar' => date('Y-m-d')
         ];
 
         if (empty($pesan)) {
@@ -604,19 +605,23 @@ class Landing extends CI_Controller
     {
 
         $pesan = array();
-        $gambar = htmlspecialchars($this->input->post('bukti_aduan', true));
+
+        if ($this->form_validation->run() == false) {
+            array_push($pesan, validation_errors());
+        }
+
         $kode = $this->input->post('kode_aduan');
-        $bukti = '';
+        // $bukti = '';
 
         // if (!empty($gambar)) {
         $config['upload_path']          = 'assets/images/bukti_aduan/';  // folder upload 
-        $config['allowed_types']        = 'jpg|png|jpeg'; // jenis file
+        $config['allowed_types']        = 'gif|png|jpg|jpeg'; // jenis file
         $config['max_size']             = 8000;
         $config['file_name']            = $this->input->post('kode_aduan');
 
         $this->load->library('upload', $config);
         $this->upload->initialize($config);
-        if (!$this->upload->do_upload('bukti_aduan')) //sesuai dengan name pada form 
+        if (!$this->upload->do_upload('bukti_aduan') && $_FILES['bukti_aduan']['size'] != 0) //sesuai dengan name pada form 
         {
             array_push($pesan, $this->upload->display_errors());
         }
@@ -633,15 +638,29 @@ class Landing extends CI_Controller
             'tgl_aduan' => date('Y-m-d')
         ];
 
-        // var_dump($data);
-        // die;
 
-        $this->M_auth->tambah_aduan($data);
-        $this->session->set_flashdata('pesan', array(
-            'status_pesan' => true,
-            'isi_pesan' => 'Aduan Berhasil Diajukan'
-        ));
-        redirect('landing/aduan_pembeli');
+        if (empty($pesan)) {
+            $result = $this->M_auth->tambah_aduan($data);
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Isi Form Dengan Valid'
+            ));
+            redirect('landing/form_aduan');
+        }
+        if ($result == true) {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => true,
+                'isi_pesan' => 'Aduan Berhasil Diajukan'
+            ));
+            redirect('landing/aduan_pembeli');
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Aduan Gagal Diajukan'
+            ));
+            redirect('landing/form_aduan');
+        }
     }
 
     public function detail_aduan($kode_aduan)
