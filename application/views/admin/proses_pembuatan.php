@@ -51,13 +51,13 @@
                                             <label for="pengeluaran">Nominal Pengeluaran</label>
                                             <div class="input-group">
                                                 <span class="input-group-text" id="basic-addon1">Rp.</span>
-                                                <input type="number" min="0" class="form-control" placeholder="Masukkan Nominal Pengeluaran" name="pengeluaran">
+                                                <input type="number" min="0" class="form-control" placeholder="Masukkan Nominal Pengeluaran" name="pengeluaran" required>
                                             </div>
                                         </div>
                                         <div class="form-group col-6">
                                             <label for="jumlah_stok">Jumlah Stok</label>
                                             <div class="input-group">
-                                                <input type="number" min="1" class="form-control" placeholder="Masukkan Jumlah Stok" name="jumlah_stok">
+                                                <input type="number" min="1" class="form-control" placeholder="Masukkan Jumlah Stok" name="jumlah_stok" required>
                                                 <span class="input-group-text" id="basic-addon2">Pcs</span>
                                             </div>
                                         </div>

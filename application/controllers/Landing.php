@@ -606,10 +606,6 @@ class Landing extends CI_Controller
 
         $pesan = array();
 
-        if ($this->form_validation->run() == false) {
-            array_push($pesan, validation_errors());
-        }
-
         $kode = $this->input->post('kode_aduan');
         // $bukti = '';
 
@@ -628,6 +624,9 @@ class Landing extends CI_Controller
         $file = $this->upload->data();
         $bukti = $file['file_name'];
         // }
+
+        // var_dump($pesan);
+        // die;
 
         $data = [
             'kode_aduan' => $kode,
@@ -648,7 +647,7 @@ class Landing extends CI_Controller
             ));
             redirect('landing/form_aduan');
         }
-        if ($result == true) {
+        if ($result == null) {
             $this->session->set_flashdata('pesan', array(
                 'status_pesan' => true,
                 'isi_pesan' => 'Aduan Berhasil Diajukan'
