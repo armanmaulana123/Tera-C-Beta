@@ -137,6 +137,11 @@ class M_admin extends CI_Model
         return $this->db->update('detaildatapemesanan', $data, $where);
     }
 
+    function update_keuangan($where, $data)
+    {
+        return $this->db->update('laporankeuangan', $data, $where);
+    }
+
     function getStatus()
     {
         $this->db->select('*');
@@ -160,6 +165,15 @@ class M_admin extends CI_Model
         return $query->row_array();
     }
 
+    function saldo($id_keuangan)
+    {
+        $this->db->select('saldo_terakhir');
+        $this->db->from('laporankeuangan');
+        $this->db->where('id_laporanKeuangan', $id_keuangan);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
     function tambah_keuangan($data)
     {
         return $this->db->insert('laporankeuangan', $data);
@@ -169,8 +183,18 @@ class M_admin extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('laporankeuangan');
+        $this->db->order_by('tanggal', 'DESC');
         $query = $this->db->get();
         return $query->result_array();
+    }
+
+    function getPengeluaran($id_pengeluaran)
+    {
+        $this->db->select('*');
+        $this->db->from('laporankeuangan');
+        $this->db->where('id_laporanKeuangan', $id_pengeluaran);
+        $query = $this->db->get();
+        return $query->row_array();
     }
 
     function total_pesanan()

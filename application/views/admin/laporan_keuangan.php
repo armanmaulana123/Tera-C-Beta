@@ -3,6 +3,7 @@
     <section class="section">
         <div class="section-header">
             <h1>Laporan Keuangan</h1>
+            <a href="<?= base_url('admin/tambah_pengeluaran') ?>" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Pengeluaran</a>
         </div>
         <div class="card">
             <div class="card-header">
@@ -22,6 +23,7 @@
                                 <th>Tanggal</th>
                                 <th>Saldo</th>
                                 <th>Keterangan</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,6 +42,9 @@
                                         <td><?= $p['saldo_terakhir']; ?></td>
 
                                         <td><?= $p['keterangan']; ?></td>
+                                        <td align="center"><?php if ($p['jenis'] == "Pengeluaran") { ?><span class="badge badge-warning"><a href="<?= base_url('admin/edit_pengeluaran/' . $p['id_laporanKeuangan']) ?>" class="text-light"><i class="fas fa-pen"></i> Edit</a></span><?php } else {
+                                                                                                                                                                                                                                                                                        echo '-';
+                                                                                                                                                                                                                                                                                    } ?></td>
                                     </tr>
                                 <?php } ?>
                             <?php else : ?>

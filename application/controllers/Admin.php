@@ -177,7 +177,7 @@ class Admin extends CI_Controller
     public function restock_produk($start = 0)
     {
         $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
-        $data['title'] = 'Daftar Produk';
+        $data['title'] = 'Restock Produk';
 
         $q = isset($_GET['search']) ? $_GET['search'] : '';
         $data['daftar_produk'] = $this->M_admin->tampil_produk();
@@ -447,7 +447,7 @@ class Admin extends CI_Controller
 
     public function detail_pesanan($kode_transaksi)
     {
-        $data['title'] = 'Daftar Pesanan | Tera-C';
+        $data['title'] = 'Detail Pesanan | Tera-C';
         $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
         $data['data_pesanan'] = $this->M_admin->getPesanan($kode_transaksi);
         $data['produk'] = $this->M_admin->getItem($kode_transaksi);
@@ -655,7 +655,7 @@ class Admin extends CI_Controller
 
     public function aduan_pembeli()
     {
-        $data['title'] = 'Laporan Keuangan | Tera-C';
+        $data['title'] = 'Daftar Aduan Pembeli | Tera-C';
         $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
         $data['aduan'] = $this->M_admin->getDataAduan();
 
@@ -682,7 +682,7 @@ class Admin extends CI_Controller
 
     public function detail_aduan($kode_produk)
     {
-        $data['title'] = 'Laporan Keuangan | Tera-C';
+        $data['title'] = 'Detail Aduan | Tera-C';
         $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
         $data['aduan'] = $this->M_admin->getAduan($kode_produk);
 
@@ -691,6 +691,97 @@ class Admin extends CI_Controller
         $this->load->view('admin/sidebar', $data);
         $this->load->view('admin/detail_aduan', $data);
         $this->load->view('admin/footer');
+    }
+
+    public function tambah_pengeluaran()
+    {
+        $data['title'] = 'Tambah Pengeluaran | Tera-C';
+        $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
+
+        $this->load->view('admin/meta', $data);
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/sidebar', $data);
+        $this->load->view('admin/tambah_pengeluaran', $data);
+        $this->load->view('admin/footer');
+    }
+
+    public function proses_tambah_pengeluaran()
+    {
+        $dataKeuangan = $this->M_admin->getKeuangan();
+        $nominal = htmlspecialchars($this->input->post('pengeluaran', true));
+
+        $saldo = $dataKeuangan['saldo_terakhir'] - (int)$nominal;
+
+        $keuangan = [
+            'nominal' => $nominal,
+            'jenis' => 'Pengeluaran',
+            'saldo_terakhir' => $saldo,
+            'tanggal' => date('Y-m-d'),
+            'bulan' => date('F'),
+            'keterangan' => htmlspecialchars($this->input->post('keterangan', true))
+        ];
+
+        $result = $this->M_admin->tambah_keuangan($keuangan);
+
+        if ($result == true) {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => true,
+                'isi_pesan' => 'Berhasil Menambah Pengeluaran'
+            ));
+            redirect('admin/laporan_keuangan');
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Gagal Menambah Pengeluaran'
+            ));
+            redirect('admin/tambah_pengeluaran');
+        }
+    }
+
+    public function edit_pengeluaran($id_pengeluaran)
+    {
+        $data['title'] = 'Edit Pengeluaran | Tera-C';
+        $data['data_user'] = $this->M_admin->data_user($this->session->userdata('id_user'));
+        $data['pengeluaran'] = $this->M_admin->getPengeluaran($id_pengeluaran);
+
+        $this->load->view('admin/meta', $data);
+        $this->load->view('admin/header', $data);
+        $this->load->view('admin/sidebar', $data);
+        $this->load->view('admin/edit_pengeluaran', $data);
+        $this->load->view('admin/footer');
+    }
+
+    public function proses_edit_pengeluaran()
+    {
+        $id_keuangan = htmlspecialchars($this->input->post('id_keuangan', true));
+        $saldo_terakhir = $this->M_admin->saldo((int)$id_keuangan - 1);
+        $nominal = htmlspecialchars($this->input->post('pengeluaran', true));
+
+        $saldo = $saldo_terakhir['saldo_terakhir'] - (int)$nominal;
+
+        $update = [
+            'nominal' => $nominal,
+            'saldo_terakhir' => $saldo,
+            'keterangan' => htmlspecialchars($this->input->post('keterangan', true))
+        ];
+
+        $where = array('id_laporanKeuangan' => $id_keuangan);
+
+        $result = $this->M_admin->update_keuangan($where, $update);
+
+        if ($result == true) {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => true,
+                'isi_pesan' => 'Berhasil Merubah Pengeluaran'
+            ));
+            redirect('admin/laporan_keuangan');
+        } else {
+            $this->session->set_flashdata('pesan', array(
+                'status_pesan' => false,
+                'isi_pesan' => 'Gagal Merubah Pengeluaran'
+            ));
+            redirect('admin/edit_pengeluaran/' . $id_keuangan);
+        }
     }
 
     public function logout()

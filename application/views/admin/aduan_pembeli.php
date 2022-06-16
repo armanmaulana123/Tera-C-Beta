@@ -2,7 +2,7 @@
 <div class="main-content">
     <section class="section">
         <div class="section-header">
-            <h1>Daftar Pesanan</h1>
+            <h1>Daftar Aduan Pembeli</h1>
         </div>
         <?php if (count($aduan) > 0) { ?>
             <?php foreach ($aduan as $a) { ?>
