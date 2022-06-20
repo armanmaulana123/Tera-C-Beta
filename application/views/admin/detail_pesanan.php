@@ -135,11 +135,11 @@
                                 </div>
                                 <?php if ($data_pesanan['id_informasiStatus'] == 2 || $data_pesanan['id_informasiStatus'] == 4) { ?>
                                     <div class="text-center">
-                                        <a href="<?= base_url('assets/images/bukti_pembayaran/') . $pembayaran['bukti_pembayaran'] ?>" class="chocolat-image" title="Just an example">
+                                        <!-- <a href="<?= base_url('assets/images/bukti_pembayaran/') . $pembayaran['bukti_pembayaran'] ?>" class="chocolat-image" title="Just an example">
                                             <div data-crop-image="285">
                                                 <img alt="image" src="<?= base_url('assets/images/bukti_pembayaran/') . $pembayaran['bukti_pembayaran'] ?>" class="img-fluid">
                                             </div>
-                                        </a>
+                                        </a> -->
                                         <div>
                                             <a href="<?= base_url('admin/tolak_pembayaran/') . $data_pesanan['kode_transaksi'] ?>" class="btn btn-outline-primary">Tolak</a>
                                             <a href="<?= base_url('admin/konfirmasi_pembayaran/') . $data_pesanan['kode_transaksi'] ?>" class="btn btn-primary">Konfirmasi</a>
