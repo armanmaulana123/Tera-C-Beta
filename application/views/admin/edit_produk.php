@@ -40,7 +40,7 @@
                         <div>
                             <img src="#" id="preview" style="max-width: 50%;">
                         </div>
-                        <input type="hidden" value="<?= $data_user['foto_profil'] ?>" name="image1">
+                        <input type="hidden" value="<?= $data_produk['foto_terasi'] ?>" name="image1">
                         <input id="image" type="file" class="form-control" name="image">
                     </div>
 

@@ -49,7 +49,7 @@
                                 <?php } ?>
                             <?php else : ?>
                                 <tr>
-                                    <td colspan="6" align="center">
+                                    <td colspan="7" align="center">
                                         Belum Ada Data
                                     </td>
                                 </tr>

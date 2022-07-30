@@ -124,7 +124,7 @@
                                             </td>
                                             <td><?= date_indo($p['tgl_pemesanan']); ?></td>
                                             <td>
-                                                <a href="<?= base_url('admin/daftar_pesanan') ?>" class="btn btn-primary">Detail</a>
+                                                <a href="<?= base_url('admin/detail_pesanan/') . $p['kode_transaksi'] ?>" class="btn btn-primary">Detail</a>
                                             </td>
                                         </tr>
                                     <?php } ?>

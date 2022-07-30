@@ -183,7 +183,7 @@ class M_admin extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('laporankeuangan');
-        $this->db->order_by('tanggal', 'DESC');
+        $this->db->order_by('id_laporanKeuangan', 'DESC');
         $query = $this->db->get();
         return $query->result_array();
     }
